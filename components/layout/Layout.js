@@ -1,12 +1,12 @@
-import MainNavigation from './MainNavigation';
-import classes from './Layout.module.css';
+import MainNavigation from "./MainNavigation";
+import classes from "./Layout.module.css";
 
-function Layout(props) {
+function Layout({ children }) {
   return (
-    <div>
+    <>
       <MainNavigation />
-      <main className={classes.main}>{props.children}</main>
-    </div>
+      <main className={classes.main}>{children}</main>
+    </>
   );
 }
 
