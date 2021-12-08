@@ -1,4 +1,5 @@
-import { MongoClient } from "mongodb";
+import { getClientFromMongoDB } from "../helper/getClientFromMongoDB";
+
 import MeetupList from "../components/meetups/MeetupList";
 
 export default function HomePage(props) {
@@ -12,11 +13,7 @@ export default function HomePage(props) {
 // }
 
 export async function getStaticProps() {
-  const client = await MongoClient.connect(
-    "mongodb+srv://Admin:iLzxtqi71qLaZPLK@cluster0.sl8gz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-  );
-  const db = client.db();
-  const meetupsCollection = db.collection("meetups");
+  const [client, meetupsCollection] = await getClientFromMongoDB();
 
   const meetups = await meetupsCollection.find().toArray();
   client.close();
