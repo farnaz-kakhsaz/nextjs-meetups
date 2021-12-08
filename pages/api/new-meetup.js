@@ -1,5 +1,4 @@
 import { getClientFromMongoDB } from "../../helper/getClientFromMongoDB";
-import { MongoClient } from "mongodb";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {

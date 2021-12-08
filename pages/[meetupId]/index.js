@@ -1,3 +1,5 @@
+import { getClientFromMongoDB } from "../../helper/getClientFromMongoDB";
+import { ObjectId } from "mongodb";
 import MeetupDetail from "../../components/meetups/MeetupDetail";
 
 export default function MeetupDetails(props) {
@@ -13,24 +15,38 @@ export default function MeetupDetails(props) {
 }
 
 export async function getStaticPaths() {
+  const [client, meetupsCollection] = await getClientFromMongoDB();
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+  client.close();
+
   return {
-    paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
+    paths: meetups.map((meetup) => ({
+      params: { meetupId: meetup._id.toString() },
+    })),
     fallback: false,
   };
 }
 
 export async function getStaticProps(context) {
+  const [client, meetupsCollection] = await getClientFromMongoDB();
+
   const meetupId = context.params.meetupId;
+
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: ObjectId(meetupId),
+  });
+
+  client.close();
 
   return {
     props: {
       meetupData: {
-        id: meetupId,
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1024px-Stadtbild_M%C3%BCnchen.jpg",
-        title: "First Meetup",
-        address: "Some address 5, Some City",
-        description: "This is a first meetup!",
+        id: selectedMeetup._id.toString(),
+        image: selectedMeetup.image,
+        title: selectedMeetup.title,
+        address: selectedMeetup.address,
+        description: selectedMeetup.description,
       },
     },
   };
