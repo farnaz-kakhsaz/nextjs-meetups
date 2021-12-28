@@ -14,7 +14,6 @@ export default function MeetupDetail({
       <h1>{title}</h1>
       <address>{address}</address>
       <p>{description}</p>
-      <p>{id}</p>
     </section>
   );
 }
